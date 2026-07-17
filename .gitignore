@@ -1,0 +1,33 @@
+# ── Secrets — NEVER commit. A leaked key in a compliance-themed repo is self-defeating.
+.env
+.env.local
+*.pem
+*.key
+
+# ── Python
+backend/.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
+
+# ── OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# ── Postgres local data (if a data dir is ever created here)
+pgdata/
+
+# ── Internal build scaffolding + personal recording aids (not part of the submission)
+docs/
+RepSense-Recording-Script.pdf

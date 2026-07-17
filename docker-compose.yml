@@ -1,0 +1,25 @@
+# DB ONLY, on purpose. Full-stack dockerization (3 services + healthchecks + hot
+# reload + build caching) is a multi-hour sink and a common 11th-hour breaker.
+# `docker compose up -d db` + native `uvicorn` + `npm run dev` satisfies
+# "the reviewer can run it" at near-zero risk.
+services:
+  db:
+    image: postgres:16
+    container_name: repsense_db
+    environment:
+      # Superuser runs init.sql, so `CREATE ROLE app_user` succeeds and the REVOKEs
+      # at the end of init.sql actually bite (app_user does not own the tables).
+      # The app itself connects as app_user (see .env DATABASE_URL).
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: repsense
+    ports:
+      - "5432:5432"
+    volumes:
+      # init.sql runs once on an empty data dir: schema + append-only triggers + CHECKs.
+      - ./backend/app/db/init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_user -d repsense"]
+      interval: 3s
+      timeout: 3s
+      retries: 10

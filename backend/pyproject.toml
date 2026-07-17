@@ -1,0 +1,15 @@
+[project]
+name = "repsense-backend"
+version = "0.1.0"
+description = "AI-First CRM — HCP Log Interaction module (FastAPI + LangGraph + Groq)"
+# ≥3.10 so the resolver FAILS LOUDLY on Python 3.9 instead of silently backsolving to
+# langchain 0.3.x (no create_agent, no middleware, no ToolRuntime — a day of wrong-cause errors).
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+# One shared event loop for the whole session so the async engine's asyncpg connection
+# pool (loop-bound) stays valid across tests.
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]
